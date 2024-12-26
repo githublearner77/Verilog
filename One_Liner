@@ -1,0 +1,56 @@
+//verilog one line codes Source: Linkedin 
+module one_liner(
+  input [7:0] in, a, b,
+  input cin, sel,
+  input [2:0]n,
+  output [7:0] out, sum, dec_out, mask,
+  output [2:0] enc_out,
+  output [7:0] grey_out, bin_out,
+  output cout, eq, parity, zero, gt, odd, even, maj
+);
+
+//1. 3-to-8 Decoder
+assign dec_out = 1 << in[2:0];
+
+//2. 2:1 Multiplexer
+assign out = sel?a:b;
+
+//3. priority encoder (8-to-3)
+assign enc_out = in[7]?3'd7:in[6]?3'd6:in[5]?3'd5:
+in[4]?3'd4:in[3]?3'd3:in[2]?3'd2:in[1]?3'd1:in[0]?3'd0;
+
+//4. Comparator (Equality Check)
+assign eq = (a==b);
+
+//5. Parity Generator (Even Parity)
+assign parity = ^in;
+
+//6. Ripple Carry Adder(8-bit)
+assign {cout, sum} = a+b+cin;
+
+//7. Odd/Even Detector 
+assign odd = in[0];  //LSB = 1 for odd
+
+//8. Increament (8-bit)
+assign out = in+1;
+
+//9. Zero Detector
+assign zero = ~|in;
+
+//10. Magnitude COmparator(Greater than)
+assign gt = (a>b);
+
+//11. Linear Feedback Shift Register (LFSR)
+assign lfsr_next = {in[6:0], in[7]^in[6]};
+
+//12. Majority Detector (3-input)
+assign maj = (a[0]&b[0])| (b[0]&in[0]) | (a[0] & in[0]);
+
+//13. Barrel Shifter(Right)
+assign out = in>>n;
+
+//14. Bit Mask Generator (Lower n Bits = 1)
+assign mask = (1<<n)-1;
+
+//15. Binary to Gray Converter
+assign grey_out = in^(in>>1);
